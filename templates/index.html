@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sanskrit & Bhagavad Gita Assistant</title>
+
+<style>
+/* ===== GLOBAL ===== */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    background: #f5f7fa;
+}
+
+/* ===== HEADER ===== */
+header {
+    background: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #6a1b9a;
+}
+header img {
+    height: 60px;
+    margin-left: 10px;
+}
+.header-title {
+    text-align: center;
+}
+.header-title h1 {
+    margin: 0;
+    font-size: 26px;
+    color: #4a148c;
+}
+.header-title p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.center-heading {
+    text-align: center;
+}
+
+
+/* ===== MAIN ===== */
+main {
+    padding: 30px;
+}
+
+/* ===== SECTION COMMON ===== */
+.section {
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;   /* reduced for balance */
+}
+
+/* ===== SECTION 1 COLORS ===== */
+.sanskrit-outer {
+    background: #efe3f8; /* light purple */
+    border: 1px solid #d3b7ea;
+}
+.sanskrit-inner {
+    background: #fffaf0; /* cream */
+    border-radius: 12px;
+    padding: 22px;
+    border: 1px solid #e6d6b8;
+}
+
+/* ===== SECTION 2 COLORS ===== */
+.gita-outer {
+    background: #fff6dd;
+    border: 1px solid #f0d6a6;
+}
+.gita-inner {
+    background: #fffaf0;
+    border-radius: 12px;
+    padding: 22px;
+}
+
+/* ===== HEADINGS ===== */
+.section h2 {
+    margin-top: 0;
+    color: #4a148c;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 8px;
+}
+
+/* ===== LAYOUT ===== */
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-bottom: 12px;
+}
+
+.label {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #4527a0;
+}
+
+/* ===== INPUTS ===== */
+select {
+    width: 100%;
+    height: 36px;
+    font-size: 14px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    width: 100%;
+    height: 32px;        /* compact height */
+    font-size: 14px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: none;
+}
+
+#sa_q, #sa_ans {
+    background: #f5efff;
+    color: #311b92;
+    font-weight: 500;
+}
+
+#en_q, #en_ans {
+    background: #ffffff;
+    color: #263238;
+}
+
+/* ===== SPEECH BUTTON ===== */
+.icon-btn {
+    font-size: 22px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #5e35b1;
+}
+
+/* ===== GITA BOX ===== */
+.gita-box {
+    background: #ffffff;
+    border-left: 5px solid #ff6f00;
+    padding: 8px 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    min-height: 34px;
+    white-space: pre-line;
+}
+.gita-title {
+    font-weight: 600;
+    color: #e65100;
+    margin-bottom: 4px;
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background: #4a148c;
+    color: #fff;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+.footer-quote {
+    text-align: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #4a148c;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 20px 0 20px;   /* equal top & bottom spacing */
+}
+
+.footer-quote span {
+    display: block;
+    font-size: 14px;
+    color: #555;
+    margin-top: 4px;
+}
+
+background: #4a148c;
+    color: #fff;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 0;
+
+
+/* ================= MOBILE RESPONSIVE ================= */
+@media (max-width: 768px) {
+
+    /* Header stacking */
+    header {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    header img {
+        height: 50px;
+        margin: 5px;
+    }
+
+    .header-title h1 {
+        font-size: 22px;
+    }
+
+    .header-title p {
+        font-size: 13px;
+    }
+
+    /* Main padding */
+    main {
+        padding: 15px;
+    }
+
+    /* Sections */
+    .section {
+        padding: 18px;
+    }
+
+    /* Two-column → single column */
+    .row {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* Inputs */
+    textarea {
+        height: 36px;
+        font-size: 14px;
+    }
+
+    select {
+        height: 38px;
+        font-size: 14px;
+    }
+
+    /* Speech buttons center */
+    .icon-btn {
+        font-size: 26px;
+        display: block;
+        margin: auto;
+    }
+
+    /* Gita box */
+    .gita-box {
+        font-size: 14px;
+        min-height: 40px;
+    }
+
+    /* Quote */
+    .footer-quote {
+        font-size: 16px;
+        margin: 16px 0;
+    }
+
+    .footer-quote span {
+        font-size: 13px;
+    }
+
+    /* Footer text */
+    footer {
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header>
+    <img src="{{ url_for('static', filename='dtc_logo.png') }}">
+    <div class="header-title">
+        <h1>Delhi Technical Campus</h1>
+        <p>Sanskrit Intelligence & Indic Knowledge Platform</p>
+    </div>
+    <div>
+        <img src="{{ url_for('static', filename='nba_logo.png') }}">
+        <img src="{{ url_for('static', filename='aicte_logo.png') }}">
+    </div>
+</header>
+
+<main>
+
+<!-- ================= SECTION 1 ================= -->
+<div class="section sanskrit-outer">
+<h2 class="center-heading">🕉️ संस्कृतबोधः (Saṃskṛta-Bodhaḥ)</h2>
+<h3 class="center-heading">Sanskrit Voice Chatbot</h3>
+
+
+<div class="sanskrit-inner">
+
+<div class="label">Select Sample Question</div>
+<select id="sample_q" onchange="selectQuestion()">
+    <option value="">— Select Sample Question —</option>
+    <option value="नमस्ते">नमस्ते</option>
+    <option value="त्वं कः असि">त्वं कः असि</option>
+    <option value="संस्कृतम् किम्">संस्कृतम् किम्</option>
+    <option value="भारतस्य राजधानी का">भारतस्य राजधानी का</option>
+    <option value="धन्यवादः">धन्यवादः</option>
+</select>
+
+<br><br>
+
+<div class="row">
+    <div>
+        <div class="label">Sanskrit Text</div>
+        <textarea id="sa_q"></textarea>
+    </div>
+    <div>
+        <div class="label">Sanskrit Output</div>
+        <textarea id="sa_ans"></textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div>
+        <div class="label">English Text</div>
+        <textarea id="en_q"></textarea>
+    </div>
+    <div>
+        <div class="label">English Output</div>
+        <textarea id="en_ans"></textarea>
+    </div>
+</div>
+
+<div class="row">
+    <div>
+        <div class="label">Speech Input</div>
+        <button class="icon-btn" onclick="listen()">🔊</button>
+    </div>
+    <div>
+        <div class="label">Speech Output</div>
+        <button class="icon-btn" onclick="speakAnswer()">🔊</button>
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- ================= SECTION 2 ================= -->
+<div class="section gita-outer">
+<h2 class="center-heading">📜 Bhagavad Gita – Knowledge Assistant</h2>
+
+<div class="gita-inner">
+
+<div class="gita-title">Question</div>
+<div id="gita_question" class="gita-box"></div>
+
+<div class="gita-title">Answer</div>
+<div id="gita_answer" class="gita-box"></div>
+
+<select id="gita_q" onchange="askGita()">
+    <option value="">— Ask a Question —</option>
+    <option value="chapters">How many chapters are in Bhagavad Gita?</option>
+    <option value="verses">How many verses are in Bhagavad Gita?</option>
+    <option value="shloka">Give me one Bhagavad Gita shloka</option>
+</select>
+
+<div id="more_shloka" style="display:none; margin-top:10px;">
+    Do you want another shloka?
+    <button onclick="moreShloka(true)">Yes</button>
+    <button onclick="moreShloka(false)">No</button>
+</div>
+
+</div>
+</div>
+
+</main>
+
+<div class="footer-quote">
+    संवादेन ज्ञानं वर्धते<br>
+    <span>Knowledge grows through dialogue</span>
+</div>
+
+
+<footer>
+© Delhi Technical Campus | Department of Computer Science & Engineering
+</footer>
+
+<script>
+/* ===== Sanskrit Chatbot ===== */
+function listen() {
+    const r = new webkitSpeechRecognition();
+    r.lang = "hi-IN";
+    r.start();
+    r.onresult = e => {
+        sa_q.value = e.results[0][0].transcript;
+        send(sa_q.value);
+    }
+}
+
+function selectQuestion() {
+    if (sample_q.value) send(sample_q.value);
+}
+
+function send(text) {
+    fetch("/process", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({sanskrit:text})
+    }).then(r=>r.json()).then(d=>{
+        sa_q.value = d.sa_question;
+        sa_ans.value = d.sa_answer;
+        en_q.value = d.en_question;
+        en_ans.value = d.en_answer;
+    });
+}
+
+function speakAnswer() {
+    const u = new SpeechSynthesisUtterance(sa_ans.value);
+    u.lang = "hi-IN";
+    u.rate = 0.85;
+    window.speechSynthesis.speak(u);
+}
+
+/* ===== Bhagavad Gita ===== */
+const shlokas = [
+{ sa:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।", en:"You have the right to perform your duty, but not to the fruits of action." },
+{ sa:"न जायते म्रियते वा कदाचित्।", en:"The soul is never born, nor does it ever die." },
+{ sa:"योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय।", en:"Perform your duties with steadiness, abandoning attachment." },
+{ sa:"वासांसि जीर्णानि यथा विहाय।", en:"As a person discards worn-out garments, the soul takes new bodies." },
+{ sa:"श्रद्धावान् लभते ज्ञानम्।", en:"One who has faith attains knowledge." }
+];
+
+function speak(text) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "hi-IN";
+    u.rate = 0.8;
+    window.speechSynthesis.speak(u);
+}
+
+function askGita() {
+    gita_question.innerText = gita_q.options[gita_q.selectedIndex].text;
+    more_shloka.style.display = "none";
+
+    let ans = "";
+    if (gita_q.value === "chapters") ans = "Bhagavad Gita has 18 chapters.";
+    if (gita_q.value === "verses") ans = "Bhagavad Gita has approximately 700 verses.";
+    if (gita_q.value === "shloka") {
+        const s = shlokas[Math.floor(Math.random()*shlokas.length)];
+        ans = s.sa + "\nMeaning: " + s.en;
+        speak(s.sa);
+        setTimeout(()=>speak(s.en),3000);
+        more_shloka.style.display = "block";
+    }
+    gita_answer.innerText = ans;
+    if (gita_q.value !== "shloka") speak(ans);
+}
+
+function moreShloka(yes) {
+    if (yes) askGita();
+    else {
+        gita_answer.innerText = "धन्यवादः।";
+        speak("धन्यवादः");
+        more_shloka.style.display = "none";
+    }
+}
+</script>
+
+</body>
+</html>

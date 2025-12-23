@@ -1,0 +1,27 @@
+{
+  "नमस्ते": {
+    "en_q": "Hello",
+    "sa_ans": "नमस्ते! भवतः स्वागतं अस्ति।",
+    "en_ans": "Hello! You are welcome."
+  },
+  "त्वं कः असि": {
+    "en_q": "Who are you?",
+    "sa_ans": "अहं संस्कृतसंवादसहायकः अस्मि।",
+    "en_ans": "I am a Sanskrit conversational assistant."
+  },
+  "संस्कृतम् किम्": {
+    "en_q": "What is Sanskrit?",
+    "sa_ans": "संस्कृतं भारतस्य प्राचीनतमं भाषा अस्ति।",
+    "en_ans": "Sanskrit is the most ancient language of India."
+  },
+  "भारतस्य राजधानी का": {
+    "en_q": "What is the capital of India?",
+    "sa_ans": "भारतस्य राजधानी नवदिल्ली अस्ति।",
+    "en_ans": "The capital of India is New Delhi."
+  },
+  "धन्यवादः": {
+    "en_q": "Thank you",
+    "sa_ans": "स्वागतम्। भवतः साहाय्यं कर्तुं हर्षः।",
+    "en_ans": "You are welcome. I am happy to help you."
+  }
+}
