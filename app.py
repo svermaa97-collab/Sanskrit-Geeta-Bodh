@@ -1,23 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 import json
-import pyttsx3
-import threading
 from difflib import get_close_matches
+import os
 
 app = Flask(__name__)
 
+# Load chatbot data
 with open("chatbot_data.json", "r", encoding="utf-8") as f:
     data = json.load(f)
-
-engine = pyttsx3.init()
-engine_lock = threading.Lock()
-
-def speak(text):
-    def _speak():
-        with engine_lock:
-            engine.say(text)
-            engine.runAndWait()
-    threading.Thread(target=_speak, daemon=True).start()
 
 def find_best_match(query, keys, cutoff=0.6):
     matches = get_close_matches(query, keys, n=1, cutoff=cutoff)
@@ -60,22 +50,12 @@ def process():
             "en_ans": "Sorry, I did not understand."
         }
 
-    
-
     return jsonify({
         "sa_question": canonical,
         "en_question": result["en_q"],
         "sa_answer": result["sa_ans"],
         "en_answer": result["en_ans"]
     })
-
-@app.route("/speak", methods=["POST"])
-def speak_answer():
-    text = request.json.get("text", "")
-    speak(text)
-    return jsonify({"status": "spoken"})
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
