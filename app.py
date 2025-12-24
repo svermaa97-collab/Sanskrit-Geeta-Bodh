@@ -3,7 +3,8 @@ import json
 from difflib import get_close_matches
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static", template_folder="templates")
+
 
 # Load chatbot data
 with open("chatbot_data.json", "r", encoding="utf-8") as f:
