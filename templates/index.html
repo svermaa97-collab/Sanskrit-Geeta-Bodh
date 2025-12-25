@@ -132,6 +132,46 @@ header img {
     white-space: pre-line;
 }
 
+/* ===== GITA CONTROL ROW ===== */
+.gita-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;          /* space between text, speaker, button */
+    margin-top: 12px;
+}
+
+.gita-label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #6a1b9a;
+}
+
+.gita-controls .icon-btn {
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.gita-label-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #6a1b9a;
+    cursor: pointer;
+    padding: 0;
+}
+
+.gita-label-btn:hover {
+    text-decoration: underline;
+}
+
+
+
+#gita-controls .icon-btn {
+    cursor: pointer;
+}
+
+
 /* ================= FORM LAYOUT ================= */
 .row {
     display: grid;
@@ -219,6 +259,21 @@ footer {
     .page-wrapper {
         padding: 20px 12px;
     }
+
+    .gita-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .gita-controls {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .gita-actions {
+        justify-content: flex-start;
+    }
 }
 </style>
 </head>
@@ -262,7 +317,7 @@ footer {
     <option value="त्वं कः असि">त्वं कः असि</option>
     <option value="संस्कृतम् किम्">संस्कृतम् किम्</option>
     <option value="भारतस्य राजधानी का">भारतस्य राजधानी का</option>
-    <option value="धन्यवादः">धन्यवादः</option>
+    
 </select>
 
 <br><br>
@@ -317,15 +372,25 @@ footer {
 <div id="gita_answer" class="gita-box"></div>
 
 <select id="gita_q" onchange="askGita()">
-    <option value="">— Ask a Question —</option>
+    <option value="">— Select Sample Question —</option>
     <option value="chapters">How many chapters are in Bhagavad Gita?</option>
     <option value="verses">How many verses are in Bhagavad Gita?</option>
-    <option value="shloka">Give me one Bhagavad Gita shloka</option>
+    <option value="krishna">Who narrated the Bhagavad Gita?</option>
+    <option value="arjuna">To whom was Bhagavad Gita spoken?</option>
+    <option value="message">What is the central message of Bhagavad Gita?</option>
 </select>
 
-<div style="margin-top:12px;">
-    <button class="icon-btn" onclick="speakGita()">🔊 Speak</button>
-    <button id="moreBtn" onclick="anotherShloka()" style="display:none;">
+
+<div class="gita-controls">
+    <button class="gita-label-btn" onclick="showShloka()">
+        📜 भगवद्गीता से श्लोक
+    </button>
+
+    <button class="icon-btn" onclick="speakGita()" title="Listen">
+        🔊
+    </button>
+
+    <button id="moreBtn" onclick="anotherShloka()">
         Another Shloka
     </button>
 </div>
@@ -349,12 +414,20 @@ footer {
 /* ===== Sanskrit Chatbot ===== */
 let lastEnglishAnswer = "";
 
+let recognition;
+
 function listen() {
-    const r = new webkitSpeechRecognition();
-    r.lang = "hi-IN";
-    r.start();
-    r.onresult = e => send(e.results[0][0].transcript);
+    if (recognition) recognition.abort();
+
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = "hi-IN";
+    recognition.start();
+
+    recognition.onresult = e => {
+        send(e.results[0][0].transcript);
+    };
 }
+
 
 function selectQuestion() {
     if (sample_q.value) send(sample_q.value);
@@ -407,53 +480,83 @@ const shlokas = [
 let currentGitaText = "";
 
 function askGita() {
-    speechSynthesis.cancel();
+    if (!gita_q.value) return;
+
+    gita_question.innerText =
+        gita_q.options[gita_q.selectedIndex].text;
+
+    let ans = "";
+
+    if (gita_q.value === "chapters")
+        ans = "Bhagavad Gita has 18 chapters.";
+
+    else if (gita_q.value === "verses")
+        ans = "Bhagavad Gita has approximately 700 verses.";
+
+    else if (gita_q.value === "krishna")
+        ans = "Bhagavad Gita was narrated by Lord Krishna.";
+
+    else if (gita_q.value === "arjuna")
+        ans = "Bhagavad Gita was spoken to Arjuna.";
+
+    else if (gita_q.value === "message")
+        ans = "The Bhagavad Gita teaches duty, righteousness, and self-realization.";
+
+    gita_answer.innerText = ans;
+    currentGitaText = ans;
+
     document.getElementById("moreBtn").style.display = "none";
-
-    if (gita_q.value === "chapters") {
-        currentGitaText = "Bhagavad Gita has 18 chapters.";
-        gita_answer.innerText = currentGitaText;
-    }
-    else if (gita_q.value === "verses") {
-        currentGitaText = "Bhagavad Gita has approximately 700 verses.";
-        gita_answer.innerText = currentGitaText;
-    }
-    else if (gita_q.value === "shloka") {
-        showRandomShloka();
-    }
-
-    gita_question.innerText = gita_q.options[gita_q.selectedIndex].text;
 }
+
+
+function showShloka() {
+    const s = shlokas[Math.floor(Math.random() * shlokas.length)];
+
+    gita_question.innerText = "भगवद्गीता से श्लोक";
+    currentGitaText = s.sa + "\nMeaning: " + s.en;
+    gita_answer.innerText = currentGitaText;
+
+    document.getElementById("moreBtn").style.display = "inline-block";
+}
+
+
+function speakText(text) {
+    speechSynthesis.cancel();   // stops overlapping
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "hi-IN";
+    u.rate = 0.85;
+    speechSynthesis.speak(u);
+}
+
 
 /* 🎤 Speak only when button clicked */
 function speakGita() {
-    if (!currentGitaText) return;
+    if (!currentGitaText) {
+        alert("Please select a question or shloka first.");
+        return;
+    }
 
     speechSynthesis.cancel();
 
-    // Split shloka and meaning
     let parts = currentGitaText.split("Meaning:");
-
     const saText = parts[0].trim();
-    const enText = parts.length > 1 ? parts[1].trim() : "";
+    const enText = parts[1] ? parts[1].trim() : "";
 
-    // Sanskrit utterance
     const sa = new SpeechSynthesisUtterance(saText);
     sa.lang = "hi-IN";
     sa.rate = 0.75;
 
-    // English utterance
     const en = new SpeechSynthesisUtterance(enText);
     en.lang = "en-IN";
     en.rate = 0.95;
 
-    // Chain them
     sa.onend = () => {
         if (enText) speechSynthesis.speak(en);
     };
 
     speechSynthesis.speak(sa);
 }
+
 
 
 /* 🔁 Another shloka */
