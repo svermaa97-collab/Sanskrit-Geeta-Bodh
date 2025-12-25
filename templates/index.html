@@ -234,7 +234,7 @@ footer {
     </div>
     <div>
         <img src="{{ url_for('static', filename='nba_logo.png') }}">
-        <img src="{{ url_for('static', filename='aicte_logo.png') }}">
+        <img src="{{ url_for('static', filename='aicte_logo.png') }}">  
     </div>
 </header>
 
@@ -296,7 +296,8 @@ footer {
     </div>
     <div>
         <div class="label">Speech Output</div>
-        <button class="icon-btn" onclick="speakAnswer()">🔊</button>
+        <button class="icon-btn" onclick="speakSanskritAndEnglish()">🔊</button>
+
     </div>
 </div>
 
@@ -322,6 +323,14 @@ footer {
     <option value="shloka">Give me one Bhagavad Gita shloka</option>
 </select>
 
+<div style="margin-top:12px;">
+    <button class="icon-btn" onclick="speakGita()">🔊 Speak</button>
+    <button id="moreBtn" onclick="anotherShloka()" style="display:none;">
+        Another Shloka
+    </button>
+</div>
+
+
 </div>
 </div>
 
@@ -338,6 +347,8 @@ footer {
 
 <script>
 /* ===== Sanskrit Chatbot ===== */
+let lastEnglishAnswer = "";
+
 function listen() {
     const r = new webkitSpeechRecognition();
     r.lang = "hi-IN";
@@ -361,32 +372,104 @@ function send(text) {
         sa_ans.value = d.sa_answer;
         en_q.value = d.en_question;
         en_ans.value = d.en_answer;
+        lastEnglishAnswer = d.en_answer;
     });
 }
 
-function speakAnswer() {
-    const u = new SpeechSynthesisUtterance(sa_ans.value);
-    u.lang = "hi-IN";
-    u.rate = 0.85;
-    speechSynthesis.speak(u);
+/* 🔊 Speak Sanskrit → then English */
+function speakSanskritAndEnglish() {
+    speechSynthesis.cancel();
+
+    const sa = new SpeechSynthesisUtterance(sa_ans.value);
+    sa.lang = "hi-IN";
+    sa.rate = 0.85;
+
+    const en = new SpeechSynthesisUtterance(lastEnglishAnswer);
+    en.lang = "en-IN";
+    en.rate = 0.95;
+
+    sa.onend = () => speechSynthesis.speak(en);
+    speechSynthesis.speak(sa);
 }
 
 /* ===== Bhagavad Gita ===== */
 const shlokas = [
-{ sa:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।", en:"You have the right to perform your duty, but not to the fruits of action." },
-{ sa:"न जायते म्रियते वा कदाचित्।", en:"The soul is never born, nor does it ever die." }
+ { sa:"कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।",
+   en:"You have the right to perform your duty, but not to the fruits of action." },
+
+ { sa:"न जायते म्रियते वा कदाचित्।",
+   en:"The soul is never born, nor does it ever die." },
+
+ { sa:"वासांसि जीर्णानि यथा विहाय।",
+   en:"As a person discards worn-out garments, the soul takes new bodies." }
 ];
 
+let currentGitaText = "";
+
 function askGita() {
+    speechSynthesis.cancel();
+    document.getElementById("moreBtn").style.display = "none";
+
+    if (gita_q.value === "chapters") {
+        currentGitaText = "Bhagavad Gita has 18 chapters.";
+        gita_answer.innerText = currentGitaText;
+    }
+    else if (gita_q.value === "verses") {
+        currentGitaText = "Bhagavad Gita has approximately 700 verses.";
+        gita_answer.innerText = currentGitaText;
+    }
+    else if (gita_q.value === "shloka") {
+        showRandomShloka();
+    }
+
     gita_question.innerText = gita_q.options[gita_q.selectedIndex].text;
-    let s = shlokas[Math.floor(Math.random()*shlokas.length)];
-    let ans = gita_q.value === "shloka" ? s.sa + "\nMeaning: " + s.en :
-              gita_q.value === "chapters" ? "Bhagavad Gita has 18 chapters." :
-              "Bhagavad Gita has approximately 700 verses.";
-    gita_answer.innerText = ans;
-    speechSynthesis.speak(new SpeechSynthesisUtterance(ans));
+}
+
+/* 🎤 Speak only when button clicked */
+function speakGita() {
+    if (!currentGitaText) return;
+
+    speechSynthesis.cancel();
+
+    // Split shloka and meaning
+    let parts = currentGitaText.split("Meaning:");
+
+    const saText = parts[0].trim();
+    const enText = parts.length > 1 ? parts[1].trim() : "";
+
+    // Sanskrit utterance
+    const sa = new SpeechSynthesisUtterance(saText);
+    sa.lang = "hi-IN";
+    sa.rate = 0.75;
+
+    // English utterance
+    const en = new SpeechSynthesisUtterance(enText);
+    en.lang = "en-IN";
+    en.rate = 0.95;
+
+    // Chain them
+    sa.onend = () => {
+        if (enText) speechSynthesis.speak(en);
+    };
+
+    speechSynthesis.speak(sa);
+}
+
+
+/* 🔁 Another shloka */
+function anotherShloka() {
+    showRandomShloka();
+}
+
+function showRandomShloka() {
+    const s = shlokas[Math.floor(Math.random() * shlokas.length)];
+    currentGitaText = s.sa + "\nMeaning: " + s.en;
+    gita_answer.innerText = currentGitaText;
+    document.getElementById("moreBtn").style.display = "inline-block";
 }
 </script>
+
+
 
 </body>
 </html>
